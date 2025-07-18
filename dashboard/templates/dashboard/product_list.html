@@ -1,0 +1,82 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<!-- ✅ Premium Product List Styles -->
+<style>
+  .product-table {
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+
+  .product-table:hover {
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+  }
+
+  .product-table thead {
+    background: #343a40;
+    color: #fff;
+  }
+
+  .product-table td, .product-table th {
+    vertical-align: middle;
+  }
+
+  h1 {
+    font-weight: 700;
+  }
+
+  .product-img {
+    max-width: 50px;
+    height: auto;
+    border-radius: 0.25rem;
+  }
+</style>
+
+<h1 class="mb-4 fw-bold">📦 Product List</h1>
+
+<div class="table-responsive product-table">
+  <table class="table table-bordered mb-0">
+    <thead>
+      <tr>
+        <th>#ID</th>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+      <tr>
+        <td>{{ product.id }}</td>
+        <td>
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+          {% else %}
+            N/A
+          {% endif %}
+        </td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.description|truncatechars:50 }}</td>
+        <td>₹ {{ product.price }}</td>
+        <td>{{ product.created_at|date:"Y-m-d" }}</td>
+        <td>
+          <!-- Add edit/delete buttons if needed -->
+          <a href="{% url 'edit_product' product.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+          <a href="{% url 'delete_product' product.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" class="text-center">No products found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

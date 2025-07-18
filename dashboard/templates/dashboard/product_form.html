@@ -1,0 +1,61 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<!-- ✅ Inline CSS (ya dashboard.css mein shift karo) -->
+<style>
+  .add-product-card {
+    max-width: 600px;
+    margin: auto;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    background: #fff;
+  }
+
+  .add-product-card:hover {
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+  }
+
+  .add-product-card .form-control,
+  .add-product-card .form-select {
+    border-radius: 0.5rem;
+  }
+
+  .add-product-card .btn-primary {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.5rem;
+  }
+</style>
+
+<h1 class="mb-4 fw-bold">➕ Add Product</h1>
+
+<!-- ✅ Premium Form Card -->
+<div class="card add-product-card">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="name" class="form-label">Product Name</label>
+      <input type="text" name="name" id="name" class="form-control" placeholder="Enter product name" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea name="description" id="description" rows="3" class="form-control" placeholder="Enter product description"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">Price</label>
+      <input type="number" name="price" id="price" step="0.01" class="form-control" placeholder="0.00" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="image" class="form-label">Product Image</label>
+      <input type="file" name="image" id="image" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Product</button>
+  </form>
+</div>
+
+{% endblock %}

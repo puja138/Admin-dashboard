@@ -1,0 +1,35 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<!-- ✅ Inline CSS (ya move to dashboard.css) -->
+<style>
+  .export-orders-card {
+    max-width: 600px;
+    margin: auto;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.05);
+    padding: 2rem;
+    background: #fff;
+    text-align: center;
+  }
+
+  .export-orders-card:hover {
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.1);
+  }
+
+  .export-orders-card .btn-success {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.5rem;
+  }
+</style>
+
+<h1 class="mb-4 fw-bold">📤 Export Orders</h1>
+
+<!-- ✅ Export Card -->
+<div class="export-orders-card">
+  <p>Click the button below to export all orders as a CSV file.</p>
+  <a href="{% url 'download_orders_csv' %}" class="btn btn-success">Download CSV</a>
+</div>
+
+{% endblock %}

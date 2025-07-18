@@ -1,0 +1,106 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .container {
+    max-width: 720px;
+  }
+
+  /* List item hover effect */
+  .list-group-item:hover {
+    background-color: #f8f9fa; /* Light gray */
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  /* Unread notification highlight */
+  .list-group-item-warning {
+    background-color: #fff3cd !important; /* Bootstrap warning background */
+    border-left: 5px solid #ffc107; /* Highlight with left border */
+  }
+
+  /* 'New' badge styling */
+  .badge.bg-primary {
+    font-size: 0.75rem;
+    vertical-align: middle;
+  }
+
+  /* Bell icon styling */
+  .bi-bell-fill {
+    font-size: 1.25rem;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+
+  .list-group-item:hover .bi-bell-fill {
+    opacity: 1;
+  }
+
+  /* Mark all as read button */
+  #markAllReadBtn {
+    min-width: 140px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 576px) {
+    .container {
+      padding: 0 1rem;
+    }
+
+    #markAllReadBtn {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    .d-flex.justify-content-between {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<div class="container my-4">
+  <h2 class="mb-4">Notifications</h2>
+
+  {% if notifications %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="text-muted">{{ notifications|length }} Notification{{ notifications|length|pluralize }}</span>
+      <!-- Placeholder for future AJAX mark-all-read button -->
+      <button id="markAllReadBtn" class="btn btn-sm btn-outline-primary" disabled>
+        Mark all as read
+      </button>
+    </div>
+
+    <ul class="list-group">
+      {% for notif in notifications %}
+        <li class="list-group-item d-flex justify-content-between align-items-start {% if not notif.is_read %}list-group-item-warning{% endif %}">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">
+              {{ notif.get_notif_type_display }}
+              {% if not notif.is_read %}
+                <span class="badge bg-primary ms-2">New</span>
+              {% endif %}
+            </div>
+            {{ notif.message }}
+            <div>
+              <small class="text-muted">{{ notif.created_at|date:"M d, Y H:i" }}</small>
+            </div>
+          </div>
+          <i class="bi bi-bell-fill text-secondary"></i>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info" role="alert">
+      You have no notifications.
+    </div>
+  {% endif %}
+</div>
+
+<!-- Bootstrap Icons CDN for bell icon -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+{% endblock %}

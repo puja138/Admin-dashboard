@@ -1,0 +1,80 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<!-- ✅ Inline CSS (ya move to dashboard.css) -->
+<style>
+  .search-orders-card {
+    max-width: 700px;
+    margin: auto;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.05);
+    padding: 2rem;
+    background: #fff;
+  }
+
+  .search-orders-card:hover {
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.1);
+  }
+
+  .search-orders-card .form-select {
+    border-radius: 0.5rem;
+  }
+
+  .search-orders-card .btn-primary {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.5rem;
+  }
+</style>
+
+<h1 class="mb-4 fw-bold">🔍 Search Orders</h1>
+
+<!-- ✅ Search Form Card -->
+<div class="search-orders-card">
+  <form method="GET">
+    <div class="mb-3">
+      <label for="status" class="form-label">Order Status</label>
+      <select name="status" id="status" class="form-select">
+        <option value="">-- Select Status --</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Delivered">Delivered</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="customer" class="form-label">Customer Email</label>
+      <input type="text" name="customer" id="customer" class="form-control" placeholder="Enter customer email">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+
+{% if orders %}
+<hr>
+<h5 class="mt-4">Results:</h5>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>Customer</th>
+      <th>Status</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>{{ order.id }}</td>
+      <td>{{ order.customer_name }}</td>
+      <td>{{ order.status }}</td>
+      <td>{{ order.order_date|date:"Y-m-d" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+
+<!-- ✅ Premium Customer List Styles (inline ya external CSS mein daal sakte ho) -->
+<style>
+  .customer-table {
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+
+  .customer-table:hover {
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+  }
+
+  .customer-table thead {
+    background: #343a40;
+    color: #fff;
+  }
+
+  .customer-table td, .customer-table th {
+    vertical-align: middle;
+  }
+
+  h1 {
+    font-weight: 700;
+  }
+</style>
+
+<!-- ✅ Premium Page Heading -->
+<h1 class="mb-4 fw-bold">👥 Customers</h1>
+
+<!-- ✅ Customer Table -->
+<div class="table-responsive customer-table">
+  <table class="table table-bordered mb-0">
+    <thead>
+      <tr>
+        <th>#ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Joined On</th>
+        <th>Orders</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for customer in customers %}
+      <tr>
+        <td>{{ customer.id }}</td>
+        <td>{{ customer.name }}</td>
+        <td>{{ customer.email }}</td>
+        <td>{{ customer.created_at|date:"Y-m-d" }}</td>
+        <td>{{ customer.orders.count }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center">No customers found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

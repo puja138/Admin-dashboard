@@ -1,0 +1,187 @@
+{% extends 'dashboard/base.html' %}
+{% load thumbnail %}
+
+{% block content %}
+
+
+<style>
+  /* Card container */
+  .add-product-card {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: #fff;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+
+  .add-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+  }
+
+  /* Input, textarea, select */
+  .add-product-card .form-control,
+  .add-product-card .form-select {
+    border-radius: 0.5rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.3s ease;
+  }
+
+  .add-product-card .form-control:focus,
+  .add-product-card .form-select:focus {
+    border-color: #495057;
+    box-shadow: 0 0 0 0.2rem rgba(73, 80, 87, 0.25);
+  }
+
+  /* Submit button */
+  .add-product-card .btn-primary {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    background: linear-gradient(135deg, #4a90e2, #357ABD);
+    border: 1px solid #357ABD;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .add-product-card .btn-primary:hover {
+    background: linear-gradient(135deg, #357ABD, #4a90e2);
+    transform: translateY(-2px);
+  }
+
+  /* Image preview */
+  #img-preview {
+    max-width: 100%;
+    margin-top: 1rem;
+    display: none;
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+  }
+
+  /* Character count text */
+  .form-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+
+  /* Responsive Tweaks */
+  @media (max-width: 576px) {
+    .add-product-card {
+      padding: 1rem;
+    }
+
+    .add-product-card .btn-primary {
+      width: 100%;
+      display: block;
+    }
+
+    .form-label {
+      font-size: 0.95rem;
+    }
+
+    input,
+    textarea,
+    select {
+      font-size: 0.95rem;
+    }
+  }
+</style>
+
+<h1 class="mb-4 fw-bold">➕ Add Product</h1>
+
+<div class="card add-product-card p-4">
+  {% if success %}
+  <div class="alert alert-success">Product saved successfully!</div>
+  {% endif %}
+  {% if error %}
+  <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data" id="product-form">
+    {% csrf_token %}
+
+    {% if product and product.image %}
+    <div class="mb-3">
+      <label class="form-label">Current Product Image:</label><br>
+      <img src="{% thumbnail product.image '300x300' crop='center' as im %}{{ im.url }}" alt="{{ product.name }}"
+        class="img-fluid rounded" style="max-height: 200px;">
+
+
+    </div>
+    {% endif %}
+
+    <div class="mb-3">
+      <label for="name" class="form-label">Product Name</label>
+      <input type="text" name="name" id="name" class="form-control" placeholder="Enter product name" maxlength="100"
+        required>
+      <small id="name-count" class="form-text text-muted">0/100</small>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea name="description" id="description" rows="3" class="form-control"
+        placeholder="Enter product description" maxlength="500"></textarea>
+      <small id="desc-count" class="form-text text-muted">0/500</small>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="price" class="form-label">Price ($)</label>
+        <input type="number" name="price" id="price" min="0" step="0.01" class="form-control" placeholder="0.00"
+          required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="available_from" class="form-label">Available From</label>
+        <input type="date" name="available_from" class="form-control">
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="image" class="form-label">Product Image</label>
+      <input type="file" name="image" id="image" class="form-control" accept="image/*">
+      <img id="img-preview" alt="Image preview">
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="submit-btn">Save Product</button>
+  </form>
+</div>
+
+<script>
+  const imageInput = document.getElementById('image');
+  const imgPreview = document.getElementById('img-preview');
+
+  if (imageInput && imgPreview) {
+    imageInput.addEventListener('change', function (e) {
+      if (e.target.files && e.target.files[0]) {
+        imgPreview.src = URL.createObjectURL(e.target.files[0]);
+        imgPreview.style.display = 'block';
+      }
+    });
+  }
+
+  function updateCount(fieldId, countId, max) {
+    const field = document.getElementById(fieldId);
+    const count = document.getElementById(countId);
+    if (field && count) {
+      field.addEventListener('input', () => {
+        count.innerText = `${field.value.length}/${max}`;
+      });
+    }
+  }
+
+  updateCount('name', 'name-count', 100);
+  updateCount('description', 'desc-count', 500);
+
+  const form = document.getElementById('product-form');
+  const submitBtn = document.getElementById('submit-btn');
+
+  if (form && submitBtn) {
+    form.addEventListener('submit', function () {
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Saving…';
+    });
+  }
+</script>
+
+{% endblock %}
